@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> | ShopNow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="/" class="logo">Shop<span>Now</span></a>
+
+    <!-- Search Bar -->
+    <div class="search-wrapper">
+      <form action="/products" method="GET" class="search-form">
+        <input type="text" name="search" id="searchInput" placeholder="Search for products, brands and more..." autocomplete="off" value="<%= typeof query !== 'undefined' && query.search ? query.search : '' %>" />
+        <button type="submit"><i class="fas fa-search"></i></button>
+      </form>
+      <div id="suggestions" class="suggestions-dropdown"></div>
+    </div>
+
+    <!-- Nav Actions -->
+    <div class="nav-actions">
+      <% if (currentUser) { %>
+        <div class="nav-dropdown">
+          <button class="nav-btn"><i class="fas fa-user"></i> <%= currentUser.name.split(' ')[0] %></button>
+          <div class="dropdown-menu">
+            <a href="/profile"><i class="fas fa-id-card"></i> My Profile</a>
+            <a href="/orders"><i class="fas fa-box"></i> My Orders</a>
+            <a href="/wishlist"><i class="fas fa-heart"></i> Wishlist</a>
+            <% if (currentUser.role === 'seller' || currentUser.role === 'admin') { %>
+              <a href="/seller/products"><i class="fas fa-store"></i> Seller Dashboard</a>
+            <% } %>
+            <% if (currentUser.role === 'admin') { %>
+              <a href="/admin/dashboard"><i class="fas fa-tachometer-alt"></i> Admin Panel</a>
+            <% } %>
+            <hr/>
+            <form action="/auth/logout" method="POST">
+              <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </form>
+          </div>
+        </div>
+      <% } else { %>
+        <a href="/auth/login" class="nav-btn"><i class="fas fa-user"></i> Login</a>
+      <% } %>
+
+      <a href="/wishlist" class="nav-btn icon-btn">
+        <i class="fas fa-heart"></i>
+      </a>
+
+      <a href="/cart" class="nav-btn cart-btn">
+        <i class="fas fa-shopping-cart"></i>
+        <% if (cartCount > 0) { %><span class="cart-badge"><%= cartCount %></span><% } %>
+      </a>
+    </div>
+  </div>
+
+  <!-- Category Bar -->
+  <div class="cat-bar">
+    <% const cats = ['Electronics','Fashion','Home & Kitchen','Books','Sports','Toys','Beauty','Groceries','Mobiles','Appliances']; %>
+    <% cats.forEach(c => { %>
+      <a href="/products?category=<%= encodeURIComponent(c) %>"><%= c %></a>
+    <% }) %>
+  </div>
+</nav>
+
+<!-- Flash Messages -->
+<div class="flash-container">
+  <% if (success && success.length > 0) { %>
+    <div class="flash flash-success"><i class="fas fa-check-circle"></i> <%= success %></div>
+  <% } %>
+  <% if (error && error.length > 0) { %>
+    <div class="flash flash-error"><i class="fas fa-exclamation-circle"></i> <%= error %></div>
+  <% } %>
+  <% if (info && info.length > 0) { %>
+    <div class="flash flash-info"><i class="fas fa-info-circle"></i> <%= info %></div>
+  <% } %>
+</div>
+
+<main class="main-content">

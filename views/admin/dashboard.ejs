@@ -1,0 +1,127 @@
+<%- include('../partials/header') %>
+<div class="container admin-dashboard">
+  <div class="admin-header">
+    <h2><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h2>
+    <div class="admin-nav">
+      <a href="/admin/products" class="btn btn-outline btn-sm">Products</a>
+      <a href="/admin/orders" class="btn btn-outline btn-sm">Orders</a>
+      <a href="/admin/users" class="btn btn-outline btn-sm">Users</a>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card stat-blue">
+      <i class="fas fa-users"></i>
+      <div>
+        <h3><%= stats.totalUsers %></h3>
+        <p>Total Customers</p>
+      </div>
+    </div>
+    <div class="stat-card stat-green">
+      <i class="fas fa-store"></i>
+      <div>
+        <h3><%= stats.totalSellers %></h3>
+        <p>Sellers</p>
+      </div>
+    </div>
+    <div class="stat-card stat-orange">
+      <i class="fas fa-box"></i>
+      <div>
+        <h3><%= stats.totalProducts %></h3>
+        <p>Products</p>
+      </div>
+    </div>
+    <div class="stat-card stat-purple">
+      <i class="fas fa-shopping-bag"></i>
+      <div>
+        <h3><%= stats.totalOrders %></h3>
+        <p>Total Orders</p>
+      </div>
+    </div>
+    <div class="stat-card stat-red">
+      <i class="fas fa-rupee-sign"></i>
+      <div>
+        <h3>₹<%= stats.totalRevenue.toFixed(0) %></h3>
+        <p>Total Revenue</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <h3>Monthly Sales</h3>
+      <canvas id="salesChart" height="120"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Category Distribution</h3>
+      <canvas id="categoryChart" height="120"></canvas>
+    </div>
+  </div>
+
+  <!-- Recent Orders -->
+  <div class="recent-section">
+    <div class="section-header">
+      <h3>Recent Orders</h3>
+      <a href="/admin/orders" class="view-all">View All →</a>
+    </div>
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr><th>Invoice</th><th>Customer</th><th>Total</th><th>Status</th><th>Date</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          <% recentOrders.forEach(order => { %>
+            <tr>
+              <td><%= order.invoiceId %></td>
+              <td><%= order.user ? order.user.name : 'N/A' %></td>
+              <td>₹<%= order.total.toFixed(2) %></td>
+              <td><span class="status-badge status-<%= order.orderStatus.toLowerCase() %>"><%= order.orderStatus %></span></td>
+              <td><%= new Date(order.createdAt).toLocaleDateString('en-IN') %></td>
+              <td><a href="/admin/orders" class="btn btn-sm btn-outline">Manage</a></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const monthlySales = <%- monthlySales %>;
+const categoryDist = <%- categoryDist %>;
+
+const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const salesLabels = monthlySales.map(d => monthNames[d._id.month - 1] + ' ' + d._id.year);
+const salesData = monthlySales.map(d => d.total);
+
+new Chart(document.getElementById('salesChart'), {
+  type: 'bar',
+  data: {
+    labels: salesLabels.length ? salesLabels : ['No Data'],
+    datasets: [{
+      label: 'Revenue (₹)',
+      data: salesData.length ? salesData : [0],
+      backgroundColor: 'rgba(59,130,246,0.7)',
+      borderRadius: 6
+    }]
+  },
+  options: { responsive: true, plugins: { legend: { display: false } } }
+});
+
+new Chart(document.getElementById('categoryChart'), {
+  type: 'doughnut',
+  data: {
+    labels: categoryDist.map(d => d._id),
+    datasets: [{
+      data: categoryDist.map(d => d.count),
+      backgroundColor: ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#f97316','#84cc16','#ec4899','#64748b']
+    }]
+  },
+  options: { responsive: true, plugins: { legend: { position: 'right' } } }
+});
+</script>
+
+<%- include('../partials/footer') %>

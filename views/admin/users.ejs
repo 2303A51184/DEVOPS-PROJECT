@@ -1,0 +1,57 @@
+<%- include('../partials/header') %>
+<div class="container admin-page">
+  <div class="page-header">
+    <h2><i class="fas fa-users"></i> Manage Users</h2>
+    <a href="/admin/dashboard" class="btn btn-outline btn-sm">← Dashboard</a>
+  </div>
+
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Status</th><th>Last Login</th><th>Joined</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        <% users.forEach(user => { %>
+          <tr class="<%= user.isBlocked ? 'row-blocked' : '' %>">
+            <td>
+              <div class="user-cell">
+                <img src="/images/uploads/<%= user.avatar %>" class="user-avatar-sm" />
+                <%= user.name %>
+              </div>
+            </td>
+            <td><%= user.email %></td>
+            <td><%= user.phone || '—' %></td>
+            <td>
+              <form action="/admin/users/<%= user._id %>/role" method="POST" style="display:inline">
+                <select name="role" onchange="this.form.submit()" class="role-select">
+                  <option value="customer" <%= user.role === 'customer' ? 'selected' : '' %>>Customer</option>
+                  <option value="seller" <%= user.role === 'seller' ? 'selected' : '' %>>Seller</option>
+                </select>
+              </form>
+            </td>
+            <td>
+              <% if (user.isBlocked) { %>
+                <span class="badge badge-danger">Blocked</span>
+              <% } else { %>
+                <span class="badge badge-success">Active</span>
+              <% } %>
+            </td>
+            <td><%= user.lastLogin ? new Date(user.lastLogin).toLocaleDateString('en-IN') : 'Never' %></td>
+            <td><%= new Date(user.createdAt).toLocaleDateString('en-IN') %></td>
+            <td class="actions-cell">
+              <form action="/admin/users/<%= user._id %>/block" method="POST" style="display:inline">
+                <button type="submit" class="btn btn-sm <%= user.isBlocked ? 'btn-success' : 'btn-warning' %>">
+                  <%= user.isBlocked ? 'Unblock' : 'Block' %>
+                </button>
+              </form>
+              <form action="/admin/users/<%= user._id %>?_method=DELETE" method="POST" style="display:inline">
+                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete user permanently?')">Delete</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<%- include('../partials/footer') %>

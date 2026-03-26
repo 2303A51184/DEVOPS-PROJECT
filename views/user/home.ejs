@@ -1,0 +1,101 @@
+<%- include('../partials/header') %>
+
+<!-- Hero Banner Carousel -->
+<div class="hero-carousel">
+  <div class="carousel-track" id="carousel">
+    <div class="carousel-slide" style="background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);">
+      <div class="slide-content">
+        <p class="slide-tag">LIMITED TIME OFFER</p>
+        <h1>Electronics Sale</h1>
+        <p>Up to 60% off on top brands</p>
+        <a href="/products?category=Electronics" class="btn btn-primary">Shop Now</a>
+      </div>
+    </div>
+    <div class="carousel-slide" style="background: linear-gradient(135deg, #8e2de2, #4a00e0);">
+      <div class="slide-content">
+        <p class="slide-tag">NEW ARRIVALS</p>
+        <h1>Fashion Forward</h1>
+        <p>Trendy styles for every occasion</p>
+        <a href="/products?category=Fashion" class="btn btn-primary">Explore</a>
+      </div>
+    </div>
+    <div class="carousel-slide" style="background: linear-gradient(135deg, #11998e, #38ef7d);">
+      <div class="slide-content">
+        <p class="slide-tag">BEST DEALS</p>
+        <h1>Home Essentials</h1>
+        <p>Transform your living space</p>
+        <a href="/products?category=Home+%26+Kitchen" class="btn btn-primary">Discover</a>
+      </div>
+    </div>
+  </div>
+  <button class="carousel-btn prev" id="prev"><i class="fas fa-chevron-left"></i></button>
+  <button class="carousel-btn next" id="next"><i class="fas fa-chevron-right"></i></button>
+  <div class="carousel-dots" id="dots"></div>
+</div>
+
+<!-- Categories Grid -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Shop by Category</h2>
+    <div class="category-grid">
+      <% const catIcons = { 'Electronics':'bolt','Fashion':'shirt','Home & Kitchen':'house','Books':'book','Sports':'futbol','Toys':'gamepad','Beauty':'spa','Groceries':'apple-whole','Mobiles':'mobile-alt','Appliances':'blender' }; %>
+      <% categories.forEach(cat => { %>
+        <a href="/products?category=<%= encodeURIComponent(cat) %>" class="cat-card">
+          <i class="fas fa-<%= catIcons[cat] || 'tag' %>"></i>
+          <span><%= cat %></span>
+        </a>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Products -->
+<% if (featured.length > 0) { %>
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Featured Products</h2>
+      <a href="/products?sort=rating" class="view-all">View All →</a>
+    </div>
+    <div class="products-grid">
+      <% featured.forEach(p => { %>
+        <%- include('../partials/product-card', { product: p }) %>
+      <% }) %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<!-- Trending Now -->
+<% if (trending.length > 0) { %>
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">🔥 Trending Now</h2>
+      <a href="/products?sort=newest" class="view-all">View All →</a>
+    </div>
+    <div class="products-grid">
+      <% trending.forEach(p => { %>
+        <%- include('../partials/product-card', { product: p }) %>
+      <% }) %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<!-- New Arrivals -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">✨ New Arrivals</h2>
+      <a href="/products?sort=newest" class="view-all">View All →</a>
+    </div>
+    <div class="products-grid">
+      <% newArrivals.forEach(p => { %>
+        <%- include('../partials/product-card', { product: p }) %>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

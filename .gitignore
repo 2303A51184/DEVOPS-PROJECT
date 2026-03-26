@@ -1,0 +1,6 @@
+node_modules/
+.env
+public/images/uploads/*
+!public/images/uploads/.gitkeep
+*.log
+.DS_Store
